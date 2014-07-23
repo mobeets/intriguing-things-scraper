@@ -13,13 +13,13 @@ BASE_URL = 'http://tinyletter.com/intriguingthings/letters/'
 RESTART_URL = 'http://tinyletter.com/intriguingthings/letters/5-intriguing-things-149'
 
 class Thing:
-    def __init__(self, number, title, url, src_url):
-        # self.dt = None
+    def __init__(self, dt, number, title, url, src_url):
+        self.dt = dt
         self.number = number
         self.title = title
         self.url = url
-        self.ps = []
         self.src_url = src_url
+        self.ps = []
 
     def __str__(self):
         ps = u'\n<br>'.join([p.decode('utf-8') for p in self.ps])
@@ -37,7 +37,7 @@ def parse(html):
     next_url = next_url.get('href') if next_url is not None else next_url
     return dt, contents, next_url
 
-def things(obj, src_url):
+def things(obj, dt, src_url):
     breaks = ["""Subscribe to The Newsletter""", """1957 American English""", """Today's 1957""", """Tell Your Friends: Subscribe to 5 Intri""", """Did some good soul forward you this email?""", """Were you forwarded this email?""", """1957 English Usage""", """Subscribe to 5 Intriguing Things"""]
     i = 1
     thing = None
@@ -52,7 +52,7 @@ def things(obj, src_url):
             if thing is not None:
                 items.append(thing)
                 thing = None
-            thing = Thing(i, p.a.text if p.a is not None else p.text.partition('. ')[-1], p.a.get('href'), src_url)
+            thing = Thing(dt, i, p.a.text if p.a is not None else p.text.partition('. ')[-1], p.a.get('href'), src_url)
             i += 1
         elif thing is not None:
             if [brk for brk in breaks if brk in p.text]:
@@ -74,13 +74,13 @@ def load(url):
     dt, contents, next_url = parse(read(url))
     if dt.strftime('%Y-%m-%d') == '2014-06-06':
         contents = fix_2014_06_06(read(url))
-    return dt, things(contents, url), next_url
+    return dt, things(contents, dt, url), next_url
 
 def scraper_sqlite(T):
     data = []
     for dt, ts in T:
         for t in ts:
-            t.index = '{0}-{1}-{2}.{1}'.format(dt.year, dt.month, dt.day, t.number)
+            t.index = '{0}-{1}-{2}.{3}'.format(dt.year, dt.month, dt.day, t.number)
             t.dt = '{0}-{1}-{2}'.format(dt.year, dt.month, dt.day)
             t.ps = ''.join(t.ps)
             data.append(t.__dict__)
@@ -116,7 +116,7 @@ def load_old_and_start_url():
             max_dt = dtc
             lasurl = row['url']
         urls.append(row['url'])
-    return urls, lasturl if lasturl is not None else RESTART_URL
+    return urls, lasturl if lasturl is not None else RESTART_URLg
 
 def main():
     urls, starturl = load_old_and_start_url()
