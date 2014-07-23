@@ -90,7 +90,7 @@ def scraper_sqlite(T):
 def io(starturl, urls):
     T = []
     next_url = starturl
-    print 'io here?'
+    print 'Starting at {0}'.format(next_url)
     while next_url and next_url != 'javascript:void(0)':
         next_url = BASE_URL + next_url.split('letters/')[1]
         print next_url
@@ -100,16 +100,14 @@ def io(starturl, urls):
         if next_url not in urls:
             T.append((dt, ts))
         next_url = new_url
+    print 'Writing {0} new entries'.format(len(T))
     scraper_sqlite(T)
 
 def load_old_and_start_url():
-    print 'and here?'
     try:
         urls_q = scraperwiki.sqlite.select("dt, url from data")
     except:
-        print 'AHGHGHGHG no db yet'
         return [], RESTART_URL
-    print 'even here?'
     urls = []
     max_dt = None
     lasturl = None
@@ -122,12 +120,9 @@ def load_old_and_start_url():
     return urls, lasturl
 
 def main():
-    print 'here?'
     urls, starturl = load_old_and_start_url()
-    print 'now here?'
+    print 'Currently have {0} entries'.format(len(urls))
     io(starturl, urls)
-    print 'finally here?'
 
 if __name__ == '__main__':
-    print 'first here?'
     main()
