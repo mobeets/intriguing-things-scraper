@@ -117,9 +117,11 @@ def load_old_and_start_url():
         urls.append(row['url'])
     return urls, lasturl
 
-def main(starturl=None):
+def main():
+    print 'here?'
     urls, starturl = load_old_and_start_url()
     io(starturl, urls)
 
 if __name__ == '__main__':
+    print 'first here?'
     main()
