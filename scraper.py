@@ -10,6 +10,7 @@ from BeautifulSoup import BeautifulSoup
 
 BASE_URL = 'http://tinyletter.com/intriguingthings/letters/'
 RESTART_URL = 'http://tinyletter.com/intriguingthings/letters/5-intriguing-things-like-a-dog-in-an-mri-machine'
+RESTART_URL = 'http://tinyletter.com/intriguingthings/letters/5-intriguing-things-152'
 
 class Thing:
     def __init__(self, number, title, url, src_url):
@@ -82,7 +83,7 @@ def scraper_sqlite(T):
             t.index = '{0}.{1}'.format(dt, t.number)
             t.dt = dt
             t.ps = ''.join(t.ps)
-            data.append(t)
+            data.append(t.__dict__)
     scraperwiki.sqlite.save(['index'], data, table_name='data')
 
 def io(starturl, Tp0):
