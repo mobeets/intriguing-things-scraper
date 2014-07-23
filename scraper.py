@@ -80,7 +80,7 @@ def scraper_sqlite(T):
     data = []
     for dt, ts in T:
         for t in ts:
-            t.index = '{0}.{1}'.format(dt, t.number)
+            t.index = '{0}-{1}-{2}.{1}'.format(dt.year, dt.month, dt.day, t.number)
             t.dt = dt
             t.ps = ''.join(t.ps)
             data.append(t.__dict__)
