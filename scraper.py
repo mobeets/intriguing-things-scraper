@@ -78,7 +78,6 @@ def load(url):
 
 def scraper_sqlite(T):
     data = []
-    print 'saving here'
     for dt, ts in T:
         for t in ts:
             t.index = '{0}-{1}-{2}.{1}'.format(dt.year, dt.month, dt.day, t.number)
@@ -117,7 +116,7 @@ def load_old_and_start_url():
             max_dt = dtc
             lasurl = row['url']
         urls.append(row['url'])
-    return urls, lasturl
+    return urls, lasturl if lasturl is not None else RESTART_URL
 
 def main():
     urls, starturl = load_old_and_start_url()
