@@ -78,12 +78,14 @@ def load(url):
 
 def scraper_sqlite(T):
     data = []
+    cnv = lambda x: x.decode('utf-8') if type(x) is str else x
     for dt, ts in T:
         for t in ts:
             t.index = '{0}-{1}-{2}.{3}'.format(dt.year, dt.month, dt.day, t.number)
             t.dt = '{0}-{1}-{2}'.format(dt.year, dt.month, dt.day)
             t.ps = ''.join(t.ps)
-            data.append(t.__dict__)
+            t_dict = {cnv(k): cnv(v) for k, v in t.__dict__.items()}
+            data.append(t_dict)
     scraperwiki.sqlite.save(['index'], data, table_name='data')
 
 def io(starturl, urls):
