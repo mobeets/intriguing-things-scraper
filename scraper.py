@@ -2,7 +2,6 @@ import glob
 import json
 import os.path
 import urllib2
-import argparse
 import datetime
 import scraperwiki
 from time import mktime
@@ -80,33 +79,13 @@ def scraper_sqlite(T):
     data = []
     for dt, ts in T:
         for t in ts:
-            t['index'] = '{0}-{1}'.format(dt, t['number'])
+            t['index'] = '{0}.{1}'.format(dt, t['number'])
             t['dt'] = dt
             t['ps'] = ''.join(t['ps'])
             data.append(t)
     scraperwiki.sqlite.save(['index'], data, table_name='data')
 
-def write(T, Tp0, outfile):
-    class MyEncoder(json.JSONEncoder):
-        def default(self, obj):
-            if isinstance(obj, datetime.datetime):
-                return int(mktime(obj.timetuple()))
-            elif isinstance(obj, Thing):
-                return obj.__dict__
-            return json.JSONEncoder.default(self, obj)
-
-    Tp_str = json.dumps(T, cls=MyEncoder)
-    print 'Found {0} new entries'.format(len(T))
-    if Tp0:
-        dts = [dt for dt, ts in Tp0]
-        Tp = [(dt, ts) for dt, ts in json.loads(Tp_str) if dt not in dts]
-        print 'Keeping {0} of those new entries'.format(len(Tp))
-        assert not any([dt in dts for dt, ts in Tp]), "Added duplicate dts--whoopsie."
-        Tp_str = json.dumps(Tp0 + Tp, cls=MyEncoder)
-        scraper_sqlite(json.loads(Tp_str))
-    open(outfile, 'w').write(Tp_str)
-
-def io(starturl, outfile, Tp0):
+def io(starturl, Tp0):
     T = []
     urls = [ts[0].get('src_url', None) for dt, ts in Tp0]
     next_url = starturl
@@ -118,63 +97,16 @@ def io(starturl, outfile, Tp0):
             print 'ERROR: {0}'.format(dt)
         if next_url not in urls:
             T.append((dt, ts))
-    write(T, Tp0, outfile)
-
-def local_io(starturl, outfile, Tp0, srcdir):
-    """
-    use html files stored in srcdir, for testing locally
-    """
-    T = []
-    urls = [ts[0].get('src_url', None) for dt, ts in Tp0]
-    url_to_filename = lambda url: os.path.join(srcdir, url.replace('/', '___'))
-    filename_to_url = lambda fn: fn.replace('___', '/').replace(srcdir + '/', '')
-
-    next_url = starturl
-    while next_url and next_url != 'javascript:void(0)':
-        next_url = BASE_URL + next_url.split('letters/')[1]
-        infile = url_to_filename(next_url)
-        print infile
-        if 'int_things_raw/http:______tinyletter.com___intriguingthings___letters___5-intriguing-things-142' == infile:
-            break
-        html = open(infile).read()
-        dt, contents, new_url = parse(html)
-        print dt
-        ts = things(contents, next_url)
-        if len(ts) == 0:
-            if dt.strftime('%Y-%m-%d') == '2013-12-17':
-                ts = things(fix_2014_06_06(html), next_url)
-            elif dt.strftime('%Y-%m-%d') == '2014-06-06':
-                pass
-            else:
-                print 'ERROR: {0}'.format(dt)
-        if next_url not in urls and len(ts) != 0:
-            T.append((dt, ts))
-        next_url = new_url
-    write(T, Tp0, outfile)
+    scraper_sqlite(T + Tp0)
 
 def load_old_and_start_url(infile):
-    if os.path.exists(infile):
-        with open(infile) as f:
-            Tp0 = json.load(f)
-            last_url = Tp0[-1][1][0].get('src_url', None)
-            print 'Already found {0} entries'.format(len(Tp0))
-            return Tp0, last_url
     return [], None
 
-def main(infile, outfile, srcdir=None):
+def main(infile=None):
     Tp0, starturl = load_old_and_start_url(infile)
     if starturl is None:
         starturl = RESTART_URL
-    if srcdir:
-        local_io(starturl, outfile, Tp0, srcdir)
-    else:
-        io(starturl, outfile, Tp0)
+    io(starturl, Tp0)
 
 if __name__ == '__main__':
-    # psr = argparse.ArgumentParser()
-    # psr.add_argument('--infile', default='')
-    # psr.add_argument('--outfile', required=True, default='tmp.json')
-    # psr.add_argument('--srcdir', default=None)
-    # args = psr.parse_args()
-    # main(args.infile, args.outfile, args.srcdir)
-    main('', '', None)
+    main()
