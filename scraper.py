@@ -171,9 +171,10 @@ def main(infile, outfile, srcdir=None):
         io(starturl, outfile, Tp0)
 
 if __name__ == '__main__':
-    psr = argparse.ArgumentParser()
-    psr.add_argument('--infile', default='')
-    psr.add_argument('--outfile', required=True, default='tmp.json')
-    psr.add_argument('--srcdir', default=None)
-    args = psr.parse_args()
-    main(args.infile, args.outfile, args.srcdir)
+    # psr = argparse.ArgumentParser()
+    # psr.add_argument('--infile', default='')
+    # psr.add_argument('--outfile', required=True, default='tmp.json')
+    # psr.add_argument('--srcdir', default=None)
+    # args = psr.parse_args()
+    # main(args.infile, args.outfile, args.srcdir)
+    main('', '', None)
