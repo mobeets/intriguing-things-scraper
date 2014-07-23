@@ -104,6 +104,7 @@ def load_old_and_start_url():
     try:
         urls_q = scraperwiki.sqlite.select("dt, url from data")
     except:
+        print 'AHGHGHGHG no db yet'
         return [], RESTART_URL
     urls = []
     max_dt = None
