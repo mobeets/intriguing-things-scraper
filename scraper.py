@@ -9,8 +9,8 @@ from dateutil import parser
 from BeautifulSoup import BeautifulSoup
 
 BASE_URL = 'http://tinyletter.com/intriguingthings/letters/'
-RESTART_URL = 'http://tinyletter.com/intriguingthings/letters/5-intriguing-things-like-a-dog-in-an-mri-machine'
-# RESTART_URL = 'http://tinyletter.com/intriguingthings/letters/5-intriguing-things-152'
+# RESTART_URL = 'http://tinyletter.com/intriguingthings/letters/5-intriguing-things-like-a-dog-in-an-mri-machine'
+RESTART_URL = 'http://tinyletter.com/intriguingthings/letters/5-intriguing-things-149'
 
 class Thing:
     def __init__(self, number, title, url, src_url):
@@ -86,28 +86,39 @@ def scraper_sqlite(T):
             data.append(t.__dict__)
     scraperwiki.sqlite.save(['index'], data, table_name='data')
 
-def io(starturl, Tp0):
+def io(starturl, urls):
     T = []
-    urls = [ts[0].get('src_url', None) for dt, ts in Tp0]
     next_url = starturl
     while next_url and next_url != 'javascript:void(0)':
         next_url = BASE_URL + next_url.split('letters/')[1]
         print next_url
-        dt, ts, next_url = load(next_url)
+        dt, ts, new_url = load(next_url)
         if len(ts) == 0:
             print 'ERROR: {0}'.format(dt)
         if next_url not in urls:
             T.append((dt, ts))
-    scraper_sqlite(T + Tp0)
+        next_url = new_url
+    scraper_sqlite(T)
 
-def load_old_and_start_url(infile):
-    return [], None
+def load_old_and_start_url():
+    try:
+        urls_q = scraperwiki.sqlite.select("dt, url from data")
+    except:
+        return [], RESTART_URL
+    urls = []
+    max_dt = None
+    lasturl = None
+    for row in urls_q:
+        dtc = parser.parse(row['dt'])
+        if max_dt is None or dtc > max_dt:
+            max_dt = dtc
+            lasurl = row['url']
+        urls.append(row['url'])
+    return urls, lasturl
 
-def main(infile=None):
-    Tp0, starturl = load_old_and_start_url(infile)
-    if starturl is None:
-        starturl = RESTART_URL
-    io(starturl, Tp0)
+def main(starturl=None):
+    urls, starturl = load_old_and_start_url()
+    io(starturl, urls)
 
 if __name__ == '__main__':
     main()
