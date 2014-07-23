@@ -10,7 +10,7 @@ from BeautifulSoup import BeautifulSoup
 
 BASE_URL = 'http://tinyletter.com/intriguingthings/letters/'
 RESTART_URL = 'http://tinyletter.com/intriguingthings/letters/5-intriguing-things-like-a-dog-in-an-mri-machine'
-RESTART_URL = 'http://tinyletter.com/intriguingthings/letters/5-intriguing-things-152'
+# RESTART_URL = 'http://tinyletter.com/intriguingthings/letters/5-intriguing-things-152'
 
 class Thing:
     def __init__(self, number, title, url, src_url):
