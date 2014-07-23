@@ -39,7 +39,7 @@ def parse(html):
 
 def things(obj, dt, src_url):
     breaks = ["""Subscribe to The Newsletter""", """1957 American English""", """Today's 1957""", """Tell Your Friends: Subscribe to 5 Intri""", """Did some good soul forward you this email?""", """Were you forwarded this email?""", """1957 English Usage""", """Subscribe to 5 Intriguing Things"""]
-    i = 1
+    num = 1
     thing = None
     items = []
     found_number = lambda i, val: val.startswith('{0}.'.format(i))
@@ -48,12 +48,12 @@ def things(obj, dt, src_url):
     for p in obj.findChildren('p'):
         if p.text is None:
             continue
-        if any([has_number(j, p) for j in xrange(i, i+2)]) and has_url(p): # for various numbering errors
+        if any([has_number(j, p) for j in xrange(num, num+2)]) and has_url(p): # for various numbering errors
             if thing is not None:
                 items.append(thing)
                 thing = None
-            thing = Thing(dt, i, p.a.text if p.a is not None else p.text.partition('. ')[-1], p.a.get('href'), src_url)
-            i += 1
+            thing = Thing(dt, num, p.a.text if p.a is not None else p.text.partition('. ')[-1], p.a.get('href'), src_url)
+            num += 1
         elif thing is not None:
             if [brk for brk in breaks if brk in p.text]:
                 if thing is not None:
@@ -116,7 +116,7 @@ def load_old_and_start_url():
             max_dt = dtc
             lasurl = row['url']
         urls.append(row['url'])
-    return urls, lasturl if lasturl is not None else RESTART_URLg
+    return urls, lasturl if lasturl is not None else RESTART_URL
 
 def main():
     urls, starturl = load_old_and_start_url()
