@@ -79,9 +79,9 @@ def scraper_sqlite(T):
     data = []
     for dt, ts in T:
         for t in ts:
-            t['index'] = '{0}.{1}'.format(dt, t['number'])
-            t['dt'] = dt
-            t['ps'] = ''.join(t['ps'])
+            t.index = '{0}.{1}'.format(dt, t.number)
+            t.dt = dt
+            t.ps = ''.join(t.ps)
             data.append(t)
     scraperwiki.sqlite.save(['index'], data, table_name='data')
 
