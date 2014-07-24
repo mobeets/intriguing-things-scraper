@@ -76,7 +76,7 @@ def load(url):
         contents = fix_2014_06_06(read(url))
     return dt, things(contents, dt, url), next_url
 
-def scraper_sqlite(T):
+def prep_data(T):
     data = []
     cnv = lambda x: x.decode('utf-8') if type(x) is str else x
     for dt, ts in T:
@@ -86,6 +86,10 @@ def scraper_sqlite(T):
             t.ps = ''.join(t.ps)
             t_dict = {cnv(k): cnv(v) for k, v in t.__dict__.items()}
             data.append(t_dict)
+    return data
+
+def scraper_sqlite(T):
+    data = prep_data(T)
     scraperwiki.sqlite.save(['index'], data, table_name='data')
 
 def io(starturl, urls):
@@ -103,6 +107,7 @@ def io(starturl, urls):
         next_url = new_url
     print 'Writing {0} new entries'.format(len(T))
     scraper_sqlite(T)
+    return T
 
 def load_old_and_start_url():
     try:
