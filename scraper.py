@@ -79,13 +79,14 @@ def load(url):
 
 def prep_data(T):
     data = []
-    cnv = lambda x: unidecode(x.decode('utf-8') if type(x) is str else x)
+    cnv = lambda x: x.decode('utf-8') if type(x) is str else x
+    cnv2 = lambda x: unidecode(x) if type(x) is unicode else x
     for dt, ts in T:
         for t in ts:
             t.index = '{0}-{1}-{2}.{3}'.format(dt.year, dt.month, dt.day, t.number)
             t.dt = '{0}-{1}-{2}'.format(dt.year, dt.month, dt.day)
             t.ps = ''.join(t.ps)
-            t_dict = {cnv(k): cnv(v) for k, v in t.__dict__.items()}
+            t_dict = {cnv2(cnv(k)): cnv2(cnv(v)) for k, v in t.__dict__.items()}
             data.append(t_dict)
     return data
 
