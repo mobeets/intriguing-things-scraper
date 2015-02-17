@@ -6,6 +6,7 @@ import datetime
 import scraperwiki
 from time import mktime
 from dateutil import parser
+from unidecode import unidecode
 from BeautifulSoup import BeautifulSoup
 
 BASE_URL = 'http://tinyletter.com/realfuture/letters/'
@@ -78,7 +79,7 @@ def load(url):
 
 def prep_data(T):
     data = []
-    cnv = lambda x: x.decode('utf-8') if type(x) is str else x
+    cnv = lambda x: unidecode(x.decode('utf-8') if type(x) is str else x)
     for dt, ts in T:
         for t in ts:
             t.index = '{0}-{1}-{2}.{3}'.format(dt.year, dt.month, dt.day, t.number)
