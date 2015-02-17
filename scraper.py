@@ -8,9 +8,9 @@ from time import mktime
 from dateutil import parser
 from BeautifulSoup import BeautifulSoup
 
-BASE_URL = 'http://tinyletter.com/intriguingthings/letters/'
-RESTART_URL = 'http://tinyletter.com/intriguingthings/letters/5-intriguing-things-like-a-dog-in-an-mri-machine'
-# RESTART_URL = 'http://tinyletter.com/intriguingthings/letters/5-intriguing-things-150'
+BASE_URL = 'http://tinyletter.com/realfuture/letters/'
+RESTART_URL = 'http://tinyletter.com/realfuture/letters/5-intriguing-things-like-a-dog-in-an-mri-machine'
+# RESTART_URL = 'http://tinyletter.com/realfuture/letters/5-intriguing-things-150'
 
 class Thing:
     def __init__(self, dt, number, title, url, src_url):
