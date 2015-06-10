@@ -128,7 +128,7 @@ def load_old_and_start_url():
         dtc = parser.parse(row['dt'])
         if max_dt is None or dtc > max_dt:
             max_dt = dtc
-            lasurl = row['url']
+            lasturl = row['url']
         urls.append(row['url'])
     return urls, (lasturl if lasturl is not None else RESTART_URL), inds
 
