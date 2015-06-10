@@ -10,8 +10,8 @@ from unidecode import unidecode
 from BeautifulSoup import BeautifulSoup
 
 BASE_URL = 'http://tinyletter.com/realfuture/letters/'
-RESTART_URL = 'http://tinyletter.com/realfuture/letters/5-intriguing-things-like-a-dog-in-an-mri-machine'
-# RESTART_URL = 'http://tinyletter.com/realfuture/letters/a-range-of-synthetic-smog-recipes'
+# RESTART_URL = 'http://tinyletter.com/realfuture/letters/5-intriguing-things-like-a-dog-in-an-mri-machine'
+RESTART_URL = 'http://tinyletter.com/realfuture/letters/a-range-of-synthetic-smog-recipes'
 # RESTART_URL = 'http://tinyletter.com/realfuture/letters/5-intriguing-things-150'
 
 class Thing:
@@ -78,7 +78,7 @@ def load(url):
         contents = fix_2014_06_06(read(url))
     return dt, things(contents, dt, url), next_url
 
-def prep_data(T):
+def prep_data(T, inds):
     data = []
     cnv = lambda x: x.decode('utf-8') if type(x) is str else x
     cnv2 = lambda x: unidecode(x) if type(x) is unicode else x
@@ -88,14 +88,15 @@ def prep_data(T):
             t.dt = '{0}-{1}-{2}'.format(dt.year, dt.month, dt.day)
             t.ps = ''.join(t.ps)
             t_dict = {cnv2(cnv(k)): cnv2(cnv(v)) for k, v in t.__dict__.items()}
-            data.append(t_dict)
+            if t.index not in inds:
+                data.append(t_dict)
     return data
 
-def scraper_sqlite(T):
-    data = prep_data(T)
+def scraper_sqlite(T, inds):
+    data = prep_data(T, inds)
     scraperwiki.sqlite.save(['index'], data, table_name='data')
 
-def io(starturl, urls):
+def io(starturl, urls, inds):
     T = []
     next_url = starturl
     print 'Starting at {0}'.format(next_url)
@@ -109,32 +110,35 @@ def io(starturl, urls):
             T.append((dt, ts))
         next_url = new_url
     print 'Writing {0} new entries'.format(len(T))
-    scraper_sqlite(T)
+    scraper_sqlite(T, inds)
     return T
 
 def load_old_and_start_url():
     scraperwiki.sqlite.execute("""CREATE TABLE IF NOT EXISTS data (ps TEXT, "index" TEXT, url TEXT, title TEXT, number INTEGER, src_url TEXT, dt TEXT)""")
     try:
-        urls_q = scraperwiki.sqlite.select("dt, url from data")
+        urls_q = scraperwiki.sqlite.select("* from data")
     except Exception, err:
         print err
-        return [], RESTART_URL
+        return [], RESTART_URL, []
     urls = []
     max_dt = None
     lasturl = None
+    inds = [row['index'] for row in urls_q]
     for row in urls_q:
         dtc = parser.parse(row['dt'])
         if max_dt is None or dtc > max_dt:
             max_dt = dtc
             lasurl = row['url']
         urls.append(row['url'])
-    return urls, lasturl if lasturl is not None else RESTART_URL
+    return urls, (lasturl if lasturl is not None else RESTART_URL), inds
 
 def main():
     print 'Loading previous entries...'
-    urls, starturl = load_old_and_start_url()
+    urls, starturl, inds = load_old_and_start_url()
+    print 'Found {0} urls'.format(len(urls))
+    print 'Starting at ' + starturl
     print 'Currently have {0} entries'.format(len(urls))
-    io(starturl, urls)
+    io(starturl, urls, inds)
 
 if __name__ == '__main__':
     main()
