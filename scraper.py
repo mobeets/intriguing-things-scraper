@@ -116,7 +116,9 @@ def io(starturl, urls):
     return T
 
 def load_old_and_start_url():
+    print scraperwiki.sqlite.show_tables()
     scraperwiki.sqlite.execute("""CREATE TABLE IF NOT EXISTS data (ps TEXT, "index" TEXT, url TEXT, title TEXT, number INTEGER, src_url TEXT, dt TEXT)""")
+    print scraperwiki.sqlite.show_tables()
     try:
         urls_q = scraperwiki.sqlite.select("dt, url from data")
     except Exception, err:
