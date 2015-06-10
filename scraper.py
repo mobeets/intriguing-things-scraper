@@ -108,9 +108,6 @@ def io(starturl, urls):
         if next_url not in urls:
             T.append((dt, ts))
         next_url = new_url
-    print T[-1][0]
-    print T[-1][1]
-    print T[-1][1][0].title
     print 'Writing {0} new entries'.format(len(T))
     scraper_sqlite(T)
     return T
