@@ -10,8 +10,8 @@ from unidecode import unidecode
 from BeautifulSoup import BeautifulSoup
 
 BASE_URL = 'http://tinyletter.com/realfuture/letters/'
-# RESTART_URL = 'http://tinyletter.com/realfuture/letters/5-intriguing-things-like-a-dog-in-an-mri-machine'
-RESTART_URL = 'http://tinyletter.com/realfuture/letters/a-range-of-synthetic-smog-recipes'
+RESTART_URL = 'http://tinyletter.com/realfuture/letters/5-intriguing-things-like-a-dog-in-an-mri-machine'
+# RESTART_URL = 'http://tinyletter.com/realfuture/letters/a-range-of-synthetic-smog-recipes'
 # RESTART_URL = 'http://tinyletter.com/realfuture/letters/5-intriguing-things-150'
 
 class Thing:
