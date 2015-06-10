@@ -11,7 +11,7 @@ from BeautifulSoup import BeautifulSoup
 
 BASE_URL = 'http://tinyletter.com/realfuture/letters/'
 RESTART_URL = 'http://tinyletter.com/realfuture/letters/5-intriguing-things-like-a-dog-in-an-mri-machine'
-RESTART_URL = 'http://tinyletter.com/realfuture/letters/a-range-of-synthetic-smog-recipes'
+# RESTART_URL = 'http://tinyletter.com/realfuture/letters/a-range-of-synthetic-smog-recipes'
 # RESTART_URL = 'http://tinyletter.com/realfuture/letters/5-intriguing-things-150'
 
 class Thing:
@@ -93,10 +93,7 @@ def prep_data(T):
 
 def scraper_sqlite(T):
     data = prep_data(T)
-    print scraperwiki.sqlite.execute('select * from data limit 1')
-    print '-----------'
     scraperwiki.sqlite.save(['index'], data, table_name='data')
-    print scraperwiki.sqlite.execute('select * from data limit 1')
 
 def io(starturl, urls):
     T = []
