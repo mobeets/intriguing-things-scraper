@@ -93,7 +93,10 @@ def prep_data(T):
 
 def scraper_sqlite(T):
     data = prep_data(T)
+    print scraperwiki.sqlite.execute('select * from data limit 1')
+    print '-----------'
     scraperwiki.sqlite.save(['index'], data, table_name='data')
+    print scraperwiki.sqlite.execute('select * from data limit 1')
 
 def io(starturl, urls):
     T = []
@@ -113,9 +116,7 @@ def io(starturl, urls):
     return T
 
 def load_old_and_start_url():
-    print scraperwiki.sqlite.show_tables()
     scraperwiki.sqlite.execute("""CREATE TABLE IF NOT EXISTS data (ps TEXT, "index" TEXT, url TEXT, title TEXT, number INTEGER, src_url TEXT, dt TEXT)""")
-    print scraperwiki.sqlite.show_tables()
     try:
         urls_q = scraperwiki.sqlite.select("dt, url from data")
     except Exception, err:
