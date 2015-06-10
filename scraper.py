@@ -11,7 +11,7 @@ from BeautifulSoup import BeautifulSoup
 
 BASE_URL = 'http://tinyletter.com/realfuture/letters/'
 RESTART_URL = 'http://tinyletter.com/realfuture/letters/5-intriguing-things-like-a-dog-in-an-mri-machine'
-# RESTART_URL = 'http://tinyletter.com/realfuture/letters/a-range-of-synthetic-smog-recipes'
+RESTART_URL = 'http://tinyletter.com/realfuture/letters/a-range-of-synthetic-smog-recipes'
 # RESTART_URL = 'http://tinyletter.com/realfuture/letters/5-intriguing-things-150'
 
 class Thing:
@@ -108,6 +108,9 @@ def io(starturl, urls):
         if next_url not in urls:
             T.append((dt, ts))
         next_url = new_url
+    print T[-1][0]
+    print T[-1][1]
+    print T[-1][1][0].title
     print 'Writing {0} new entries'.format(len(T))
     scraper_sqlite(T)
     return T
