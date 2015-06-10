@@ -11,6 +11,7 @@ from BeautifulSoup import BeautifulSoup
 
 BASE_URL = 'http://tinyletter.com/realfuture/letters/'
 RESTART_URL = 'http://tinyletter.com/realfuture/letters/5-intriguing-things-like-a-dog-in-an-mri-machine'
+# RESTART_URL = 'http://tinyletter.com/realfuture/letters/a-range-of-synthetic-smog-recipes'
 # RESTART_URL = 'http://tinyletter.com/realfuture/letters/5-intriguing-things-150'
 
 class Thing:
@@ -112,6 +113,7 @@ def io(starturl, urls):
     return T
 
 def load_old_and_start_url():
+    scraperwiki.sqlite.execute("""CREATE TABLE IF NOT EXISTS data (ps TEXT, "index" TEXT, url TEXT, title TEXT, number INTEGER, src_url TEXT, dt TEXT)""")
     try:
         urls_q = scraperwiki.sqlite.select("dt, url from data")
     except:
