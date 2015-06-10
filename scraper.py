@@ -116,7 +116,8 @@ def load_old_and_start_url():
     scraperwiki.sqlite.execute("""CREATE TABLE IF NOT EXISTS data (ps TEXT, "index" TEXT, url TEXT, title TEXT, number INTEGER, src_url TEXT, dt TEXT)""")
     try:
         urls_q = scraperwiki.sqlite.select("dt, url from data")
-    except:
+    except Exception, err:
+        print err
         return [], RESTART_URL
     urls = []
     max_dt = None
