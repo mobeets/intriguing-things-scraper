@@ -1,0 +1,4 @@
+-e git+http://github.com/openaustralia/scraperwiki-python.git@morph_defaults#egg=scraperwiki
+python-dateutil==2.1
+BeautifulSoup==3.2.1
+unidecode==0.4.16
