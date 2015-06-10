@@ -131,6 +131,7 @@ def load_old_and_start_url():
     return urls, lasturl if lasturl is not None else RESTART_URL
 
 def main():
+    print 'Loading previous entries...'
     urls, starturl = load_old_and_start_url()
     print 'Currently have {0} entries'.format(len(urls))
     io(starturl, urls)
